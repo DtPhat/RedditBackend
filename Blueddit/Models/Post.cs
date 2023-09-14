@@ -11,7 +11,6 @@ namespace Blueddit.Models
         public string Title { get; set; }
         public string Content { get; set; }
         public string Type { get; set; }
-        public string Author { get; set; } = "Blueditor";
         public User User { get; set; }
         public List<Comment> Comments { get; set; }
 

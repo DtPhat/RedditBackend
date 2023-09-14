@@ -6,9 +6,8 @@ namespace Blueddit.Models
     {
         [Key]
         public int Id { get; set; }
-        public int? PostId { get; set; } 
+        public int PostId { get; set; } 
         public int? UserId { get; set; }
-        public string Author { get; set; } = "Blueditor";
         public string Content { get; set; }
         public int Votes { get; set; }
         public User User { get; set; }

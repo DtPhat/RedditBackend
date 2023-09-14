@@ -38,7 +38,7 @@ namespace Blueddit.Controllers
             };
             _context.Comments.Add(NewComment);
             await _context.SaveChangesAsync();
-            return Ok();
+            return Ok(await _context.Posts.Include(p => p.User).ToListAsync());
 
         }
     }

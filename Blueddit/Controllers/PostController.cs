@@ -16,10 +16,10 @@ namespace Blueddit.Controllers
             _context = context;
         }
 
-        [HttpGet("getAllPost")]
-        public async Task<ActionResult<List<Post>>> GetAllPost()
+        [HttpGet("getAll")]
+        public async Task<ActionResult<List<Post>>> GetAllPosts()
         {
-            var PostList = _context.Posts.ToList();
+            var PostList = await _context.Posts.ToListAsync();
             return Ok(PostList);
         }
 
@@ -30,20 +30,19 @@ namespace Blueddit.Controllers
             {
                 Title = request.Title,
                 Content = request.Content,
-                Author = request.Author,
                 Type = request.Type,
-                UserId = 1,
+                UserId = request.UserId,
             };
             _context.Posts.Add(NewPost);
             await _context.SaveChangesAsync();
-            return Ok(await _context.Posts.Include(c => c.User).ToListAsync());
+            return Ok("Post added");
         }
         [HttpGet("{postId}")]
         public async Task<ActionResult<Post>> GetPost(int postId)
         {
             var Post = await _context.Posts.FindAsync(postId); 
             if(Post == null) return NotFound(new { Message = "Post not found!" });
-            return Ok(Post);
+            return Ok(await _context.Posts.Where(p => p.Id == postId).FirstOrDefaultAsync()); 
         }
         [HttpPut("{postId}")]
         public async Task<ActionResult<Post>> UpdatePost(int postId, PostUpdateDto request)
@@ -52,16 +51,16 @@ namespace Blueddit.Controllers
             if(UpdatedPost == null) return BadRequest(new { Message = "Post not found" });
             UpdatedPost.Title = request.Title;
             UpdatedPost.Content = request.Content;
-            _context.Update(UpdatedPost);
+            _context.Posts.Update(UpdatedPost);
             await _context.SaveChangesAsync();
             return Ok("Post updated");
         }
         [HttpDelete("{postId}")]
         public async Task<ActionResult<Post>> DeletePost(int postId)
         {
-            var UpdatedPost = await _context.Posts.FindAsync(postId);
-            if (UpdatedPost == null) return BadRequest(new { Message = "Post not found" });
-            _context.Posts.Remove(UpdatedPost);
+            var DeletedPost = await _context.Posts.FindAsync(postId);
+            if (DeletedPost == null) return BadRequest(new { Message = "Post not found" });
+            _context.Posts.Remove(DeletedPost);
             await _context.SaveChangesAsync();
             return Ok("Post deleted");
         }
